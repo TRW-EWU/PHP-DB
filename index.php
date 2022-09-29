@@ -1,21 +1,6 @@
 <?php
 
-// This is a test for git
-// Another entry
-// Change #2
-//
-// Changes on TestBranch in GIT
-
-//
-// Change #3
-//
-
-// Change on home computer
-//
-
-// Change on office computer
-// Change again office
-
+// UDemy: Current->92
 
 require 'includes/database.php';
 
