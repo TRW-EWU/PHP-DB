@@ -1,6 +1,7 @@
 <?php
 
 // Object Oriented DB
+// Section #17, Lecture #110 Completed
 
 require 'includes/database.php';
 require 'includes/auth.php';
