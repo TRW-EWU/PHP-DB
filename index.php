@@ -1,5 +1,7 @@
 <?php
 
+// Object Oriented DB
+
 require 'includes/database.php';
 require 'includes/auth.php';
 
