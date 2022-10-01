@@ -1,30 +1,19 @@
 <?php
 
 // Object Oriented DB
-// Section #17, Lecture #110 Completed
 
-require 'includes/database.php';
+require 'classes/Database.php';
+require 'classes/Article.php';
 require 'includes/auth.php';
 
-
 session_start();
-$errors = [];
 
-$conn = getDB();
+$db = new Database();
+$conn = $db->getConn();
 
-$sql = "SELECT *
-        FROM article
-        ORDER BY published_at;";
+$articles = Article::getAll($conn);
 
-$results = mysqli_query($conn, $sql);
-
-if ( $result === false) {
-    echo mysqli_error($conn);
-} else {
-    $articles = mysqli_fetch_all($results, MYSQLI_ASSOC);
-}
 ?>
-
 <?php require 'includes/header.php'; ?>
 
 <?php if (isLoggedIn()): ?>
