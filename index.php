@@ -1,45 +1,40 @@
 <?php
 
+<<<<<<< HEAD
 // UDemy: Current->92
+=======
+// Object Oriented DB
 
-require 'includes/database.php';
+require 'includes/init.php';
 
-$conn = getDB();
+$conn = require 'includes/db.php';
 
-$sql = "SELECT *
-        FROM article
-        ORDER BY published_at;";
+$paginator = new Paginator(1, 4);
 
-$results = mysqli_query($conn, $sql);
+$articles = Article::getPage($conn, $paginator->limit, $paginator->offset);
+>>>>>>> master
 
-if ( $result === false) {
-    echo mysqli_error($conn);
-} else {
-    $articles = mysqli_fetch_all($results, MYSQLI_ASSOC);
-}
 ?>
-
 <?php require 'includes/header.php'; ?>
 
-<a href="new-article.php">New article</a>
+<?php if (empty($articles)): ?>
+    <p>No articles found.</p>
+<?php else: ?>
 
-            <?php if (empty($articles)): ?>
-                <p>No articles found.</p>
-            <?php else: ?>
-                <ul>
-                    <?php foreach ($articles as $article): ?>
-                        <li>
-                            <article>
-                                <h2>
-                                    <a href="article.php?id=<?= $article['id'] ?>" >
-                                        <?= htmlspecialchars($article['title']); ?>
-                                    </a>
-                                </h2>
-                                <p><?= htmlspecialchars($article['content']); ?></p>
-                            </article>
-                        </li>
-                    <?php endforeach; ?>
-                </ul>
-            <?php endif; ?>
+    <ul>
+        <?php foreach ($articles as $article): ?>
+            <li>
+                <article>
+                    <h2>
+                        <a href="article.php?id=<?= $article['id'] ?>" >
+                            <?= htmlspecialchars($article['title']); ?>
+                        </a>
+                    </h2>
+                    <p><?= htmlspecialchars($article['content']); ?></p>
+                </article>
+            </li>
+        <?php endforeach; ?>
+    </ul>
+<?php endif; ?>
 
 <?php require 'includes/footer.php'; ?>

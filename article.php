@@ -1,13 +1,12 @@
 <?php
 
-require 'includes/database.php';
-require 'includes/article.php';
+require 'includes/init.php';
 
-$conn = getDB();
+$conn = require 'includes/db.php';
 
 if (isset($_GET['id'])) {
 
-    $article = getArticle($conn, $_GET['id']);
+    $article = Article::getByID($conn, $_GET['id']);
 
 } else {
     $article = null;
@@ -16,6 +15,7 @@ if (isset($_GET['id'])) {
 
 <?php require 'includes/header.php'; ?>
 
+<<<<<<< HEAD
             <?php if ($article == null): ?>
                 <p>article not found.</p>
             <?php else: ?>
@@ -28,5 +28,16 @@ if (isset($_GET['id'])) {
                 <a href="delete-article.php?id=<?= $article['id']; ?>">Delete</a>
                 
              <?php endif; ?>
+=======
+<?php if ($article) : ?>
+    <article>
+        <h2><?= htmlspecialchars($article->title); ?></h2>
+        <p><?= htmlspecialchars($article->content); ?></p>
+    </article>
+
+<?php else: ?>
+    <p>Article not found.</p>
+<?php endif; ?>
+>>>>>>> master
 
 <?php require 'includes/footer.php'; ?>
