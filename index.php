@@ -4,7 +4,7 @@ require 'includes/init.php';
 
 $conn = require 'includes/db.php';
 
-$paginator = new Paginator($_GET['page'] ?? 1, 2);
+$paginator = new Paginator($_GET['page'] ?? 1, 2, Article::getTotal($conn));
 
 $articles = Article::getPage($conn, $paginator->limit, $paginator->offset);
 
@@ -30,6 +30,9 @@ $articles = Article::getPage($conn, $paginator->limit, $paginator->offset);
             </li>
         <?php endforeach; ?>
     </ul>
+
+<?php require 'includes/pagination.php'; ?>
+
 <?php endif; ?>
 
 <?php require 'includes/footer.php'; ?>
