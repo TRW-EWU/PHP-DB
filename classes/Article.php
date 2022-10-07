@@ -114,6 +114,55 @@ class Article
     }
 
     /**
+     * Get the article record based on the ID along with associated categories, if any
+     * 
+     * @param object $conn Connection to the database
+     * @param integer $id the article id
+     * 
+     * @return array The article data with categories
+     */
+    public static function getWithCategories($conn, $id)
+    {
+        $sql = "SELECT article.*, category.name AS category_name 
+                FROM article
+                LEFT JOIN article_category
+                ON article.id = article_category.article_id
+                LEFT JOIN category
+                ON article_category.category_id = category.id
+                WHERE article.id = :id";
+
+        $stmt = $conn->prepare($sql);
+        $stmt->bindValue(':id', $id, PDO::PARAM_INT);
+
+        $stmt->execute();
+
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+
+    /**
+     * Get the article's categories
+     * 
+     * @param object $conn Connection to the database
+     * 
+     * @return array The category data
+     */
+    public function getCategories($conn)
+    {
+        $sql = "SELECT category.*
+                FROM category
+                JOIN article_category
+                ON category.id = article_category.category_id
+                WHERE article_id = :id";
+
+        $stmt = $conn->prepare($sql);
+        $stmt->bindValue(':id', $this->id, PDO::PARAM_INT);
+
+        $stmt->execute();
+
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+
+    /**
      * Update the article with its current property values
      * 
      * @param object $conn Connection to the database
