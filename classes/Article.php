@@ -70,11 +70,16 @@ class Article
      */
     public static function getPage($conn, $limit, $offset)
     {
-        $sql = "SELECT *
+        $sql = "SELECT a.*, category.name AS category_name
+                FROM (SELECT *
                 FROM article
                 ORDER BY published_at
                 LIMIT :limit
-                OFFSET :offset";
+                OFFSET :offset) AS a
+                LEFT JOIN article_category
+                ON a.id = article_category.article_id
+                LEFT JOIN category
+                ON article_category.category_id = category.id";
         
         $stmt = $conn->prepare($sql);
 
@@ -83,7 +88,30 @@ class Article
 
         $stmt->execute();
 
-        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+        $results = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+        $articles = [];
+
+        $previous_id = null;
+
+        foreach($results as $row) {
+
+            $article_id = $row['id'];
+
+            if ( $article_id != $previous_id) {
+
+                $row['category_names'] = [];
+
+
+                $articles[$article_id] = $row;
+
+            }
+
+            $articles[$article_id]['category_names'][] = $row['category_name'];
+            $previous_id = $article_id;
+        }
+
+        return $articles;
     }
 
 
@@ -195,6 +223,54 @@ class Article
         } else {
             return false;
         }
+    }
+
+    /**
+     * Set the article categories
+     * 
+     * @param object $conn Connection to the database
+     * @param array $ids Category IDs
+     * 
+     * @return void
+     */
+    public function setCategories($conn, $ids)
+    {
+        if ($ids) {
+            $sql = "INSERT IGNORE INTO article_category (article_id, category_id)
+                    VALUES ";
+
+            $values = [];
+
+            foreach ($ids as $id) {
+                $values[] = "({$this->id}, ?)";
+            }
+
+            $sql .= implode(", ", $values);
+
+            $stmt = $conn->prepare($sql);
+
+            foreach ($ids as $i => $id) {
+                $stmt->bindValue($i + 1, $id, PDO::PARAM_INT);
+            }
+            $stmt->execute();
+        }
+
+        $sql = "DELETE FROM article_category
+                WHERE article_id = {$this->id}";
+
+        if ($ids) {
+
+            $placeholders = array_fill(0, count($ids), '?');
+            $sql .= " AND category_id NOT IN (" .implode(", ", $placeholders) . ")";
+        }
+
+        $stmt = $conn->prepare($sql);
+
+        foreach ($ids as $i => $id) {
+            $stmt->bindValue($i + 1, $id, PDO::PARAM_INT);
+        }
+
+        $stmt->execute();
     }
 
     /**
