@@ -4,9 +4,9 @@ require 'includes/init.php';
 
 $conn = require 'includes/db.php';
 
-$paginator = new Paginator($_GET['page'] ?? 1, 2, Article::getTotal($conn));
+$paginator = new Paginator($_GET['page'] ?? 1, 4, Article::getTotal($conn, true));
 
-$articles = Article::getPage($conn, $paginator->limit, $paginator->offset);
+$articles = Article::getPage($conn, $paginator->limit, $paginator->offset, true);
 
 ?>
 
@@ -25,6 +25,11 @@ $articles = Article::getPage($conn, $paginator->limit, $paginator->offset);
                             <?= htmlspecialchars($article['title']); ?>
                         </a>
                     </h2>
+
+                    <time datetime="<?= $article['published_at'] ?>"><?php 
+                        $datetime = new DateTime($article['published_at']);
+                        echo $datetime->format("j F, Y");
+                    ?></time>
 
                     <?php if ($article['category_names']) : ?>
                         <p>Categories:
