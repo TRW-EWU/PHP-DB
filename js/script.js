@@ -19,7 +19,7 @@ $.validator.addMethod("dateTime", function(value, element) {
 $("#formArticle").validate({
     rules: {
         title: {
-            required : true
+            required: true
         },
         content: {
             required: true

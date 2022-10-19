@@ -49,17 +49,17 @@ class Auth
      */
     public static function logout()
     {
-        $_SESSION = array();
+        $_SESSION = [];
 
         if(ini_get("session.use_cookies")) {
             $params = session_get_cookie_params();
             setcookie(session_name(),
                 '',
                 time() - 42000,
-                $param["path"],
+                $params["path"],
                 $params["domain"],
                 $params["secure"],
-                $param["httponly"]
+                $params["httponly"]
             );
         }
         
