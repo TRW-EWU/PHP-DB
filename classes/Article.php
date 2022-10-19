@@ -41,6 +41,16 @@ class Article
     public $errors = [];
 
     /**
+     * Article constructor
+     */
+    function __construct()
+    {
+        $this->title = "<default Title>";
+        $this->content = "<default Content>";
+        $this->published_at = date("Y-m-d H:i:s");
+    }
+
+    /**
      * Get all the articles
      * 
      * @param object $conn Connection to the database
